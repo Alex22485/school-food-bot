@@ -4,6 +4,7 @@ const config = require("../config");
 const logger = require("../utils/logger");
 const { sanitizeInput, requestLogger } = require("../middlewares/security");
 const errorHandler = require("../middlewares/errorHandler");
+const escapeHtml = require("escape-html");
 
 class Bot {
   constructor() {
