@@ -120,3 +120,19 @@
 {"chatId":1282158641,"command":"/help","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 14:39:15","userId":1282158641,"username":"AlexGlushkov85"}
 {"level":"debug","message":"Response time","ms":4,"service":"school-canteen-bot","timestamp":"2026-03-04 14:39:15"}
 {"level":"info","message":"Bot stopped","service":"school-canteen-bot","signal":"SIGINT","timestamp":"2026-03-04 14:40:00"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 16:57:13","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"info","message":"User started bot","service":"school-canteen-bot","timestamp":"2026-03-04 16:57:13","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"Response time","ms":4,"service":"school-canteen-bot","timestamp":"2026-03-04 16:57:13"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 16:58:59","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"info","message":"User started bot","service":"school-canteen-bot","timestamp":"2026-03-04 16:58:59","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"Response time","ms":1,"service":"school-canteen-bot","timestamp":"2026-03-04 16:58:59"}
+{"chatId":5913821804,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 17:00:07","userId":5913821804,"username":"amid20143010"}
+{"level":"info","message":"User started bot","service":"school-canteen-bot","timestamp":"2026-03-04 17:00:07","userId":5913821804,"username":"amid20143010"}
+{"level":"debug","message":"Response time","ms":1,"service":"school-canteen-bot","timestamp":"2026-03-04 17:00:07"}
+{"chatId":5913821804,"command":"/help","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 17:00:26","userId":5913821804,"username":"amid20143010"}
+{"level":"debug","message":"Response time","ms":1,"service":"school-canteen-bot","timestamp":"2026-03-04 17:00:26"}
+{"chatId":5913821804,"command":"/menu","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 17:00:36","userId":5913821804,"username":"amid20143010"}
+{"level":"debug","message":"Response time","ms":2,"service":"school-canteen-bot","timestamp":"2026-03-04 17:00:36"}
+{"chatId":5913821804,"command":"/order","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 17:00:48","userId":5913821804,"username":"amid20143010"}
+{"level":"debug","message":"Response time","ms":1,"service":"school-canteen-bot","timestamp":"2026-03-04 17:00:48"}
+{"level":"info","message":"Bot stopped","service":"school-canteen-bot","signal":"SIGINT","timestamp":"2026-03-04 17:14:26"}
