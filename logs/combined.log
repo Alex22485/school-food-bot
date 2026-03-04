@@ -245,3 +245,58 @@
 {"action":"profile","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 22:58:30","userId":2}
 {"level":"debug","message":"Response time","ms":2,"service":"school-canteen-bot","timestamp":"2026-03-04 22:58:30"}
 {"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-04 22:59:47"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:27"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:27"}
+{"chatId":1282158641,"command":"/status","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:28","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"user","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:03:28","userId":2}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:28","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"warn","message":"Rate limit exceeded","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:28","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"Response time","ms":2,"service":"school-canteen-bot","timestamp":"2026-03-04 23:03:28"}
+{"level":"debug","message":"Unknown command","service":"school-canteen-bot","text":"/status","timestamp":"2026-03-04 23:03:28","userId":2}
+{"level":"debug","message":"Response time","ms":7,"service":"school-canteen-bot","timestamp":"2026-03-04 23:03:28"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:35","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"user","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:03:35","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:03:35","userId":2}
+{"level":"debug","message":"Response time","ms":6,"service":"school-canteen-bot","timestamp":"2026-03-04 23:03:35"}
+{"chatId":1282158641,"command":"/help","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:42","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"user","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:03:42","userId":2}
+{"action":"help","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:03:42","userId":2}
+{"level":"debug","message":"Response time","ms":6,"service":"school-canteen-bot","timestamp":"2026-03-04 23:03:42"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:55"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:59"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:03:59"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:04:02","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"user","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:04:02","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:04:02","userId":2}
+{"level":"debug","message":"Response time","ms":3,"service":"school-canteen-bot","timestamp":"2026-03-04 23:04:02"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:10:26"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:10:26"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:13:02"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:13:02"}
+{"level":"error","message":"Failed to start bot: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running","on":{"method":"getUpdates","payload":{"allowed_updates":[],"offset":573455682,"timeout":50}},"response":{"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running","error_code":409,"ok":false},"service":"school-canteen-bot","stack":"Error: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running\n    at Telegram.callApi (D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\node_modules\\telegraf\\lib\\core\\network\\client.js:315:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async [Symbol.asyncIterator] (D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\node_modules\\telegraf\\lib\\core\\network\\polling.js:30:33)\n    at async Polling.loop (D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\node_modules\\telegraf\\lib\\core\\network\\polling.js:73:30)\n    at async Telegraf.launch (D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\node_modules\\telegraf\\lib\\telegraf.js:194:13)\n    at async startBot (D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\index.js:11:9)","timestamp":"2026-03-04 23:13:03"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:13:26","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"user","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:13:26","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:13:26","userId":2}
+{"level":"debug","message":"Response time","ms":5,"service":"school-canteen-bot","timestamp":"2026-03-04 23:13:26"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-04 23:16:37"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:17:37"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:17:37"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-04 23:18:24"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:20:39"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:20:39"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:21:31"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:21:31"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:21:37","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"admin","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:21:37","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:21:38","userId":2}
+{"level":"debug","message":"Response time","ms":4,"service":"school-canteen-bot","timestamp":"2026-03-04 23:21:38"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-04 23:23:20"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:23:31"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:23:31"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-04 23:24:49"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-04 23:24:49"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-04 23:24:52","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"user","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:24:52","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-04 23:24:52","userId":2}
+{"level":"debug","message":"Response time","ms":3,"service":"school-canteen-bot","timestamp":"2026-03-04 23:24:52"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-04 23:25:11"}
