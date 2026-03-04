@@ -12,7 +12,6 @@ const {
   allowUser,
 } = require("../middlewares/roleCheck");
 const { auditMiddleware } = require("../middlewares/audit");
-const { startHandler, handleRoleSelection } = require("../handlers/start");
 
 // Создаем экземпляр бота
 const bot = new Telegraf(config.bot.token);
@@ -37,15 +36,35 @@ bot.use(
 );
 bot.use(authMiddleware); // Аутентификация (должна быть после session)
 
-// Подключаем обработчик команды /start
-bot.start(auditMiddleware("start"), startHandler);
+// Команды с проверкой ролей и аудитом
 
-// Обработчик инлайн-кнопок (только для выбора роли)
-bot.action(/^role_.+/, async (ctx) => {
-  await handleRoleSelection(ctx);
+// Публичные команды (доступны всем)
+bot.start(auditMiddleware("start"), (ctx) => {
+  const user = ctx.state.user;
+  const username = ctx.from.first_name || "Пользователь";
+
+  let welcomeText = `👋 Привет, ${escapeHtml(username)}!\n\n`;
+
+  if (user.role === "admin") {
+    welcomeText += "🔑 Вы вошли как администратор\n";
+  } else if (user.role === "class_teacher") {
+    welcomeText += "🍎 Вы вошли как классный руководитель\n";
+  } else if (user.role === "kitchen") {
+    welcomeText += "🍳 Вы вошли как сотрудник кухни\n";
+  } else if (user.role === "parent") {
+    welcomeText += "👪 Вы вошли как родитель\n";
+  }
+
+  welcomeText +=
+    "Я бот школьной столовой. Я помогу вам:\n" +
+    "🍽️ Посмотреть меню на сегодня\n" +
+    "📝 Сделать заказ\n" +
+    "ℹ️ Узнать статус заказа\n\n" +
+    "Используйте /help для списка всех команд.";
+
+  ctx.reply(welcomeText);
 });
 
-// Остальные команды (временно закомментированы для тестирования)
 bot.help(auditMiddleware("help"), (ctx) => {
   const user = ctx.state.user;
   let helpText = "📋 Доступные команды:\n\n";
@@ -88,6 +107,7 @@ bot.help(auditMiddleware("help"), (ctx) => {
   ctx.reply(helpText);
 });
 
+// Команда профиля (доступна всем аутентифицированным)
 bot.command("profile", auditMiddleware("profile"), (ctx) => {
   const user = ctx.state.user;
 
@@ -118,6 +138,7 @@ bot.command("profile", auditMiddleware("profile"), (ctx) => {
   ctx.reply(profileText);
 });
 
+// Пример команды только для админов
 bot.command("users", allowAdmin, auditMiddleware("view_users"), (ctx) => {
   const { prepare } = require("../database/db");
 
@@ -131,7 +152,7 @@ bot.command("users", allowAdmin, auditMiddleware("view_users"), (ctx) => {
 
     let text = "👥 Последние пользователи:\n\n";
     users.forEach((u) => {
-      text += `🆔 ${u.id} | 📱 ${u.telegram_id} | ${getRoleName(u.role)} | ${u.is_active ? "✅" : "❌"}\n`;
+      text += `🆔 ${u.id} | 📱 ${u.telegram_id} | 👤 ${getRoleName(u.role)} | ${u.is_active ? "✅" : "❌"}\n`;
     });
 
     ctx.reply(text);
@@ -141,6 +162,7 @@ bot.command("users", allowAdmin, auditMiddleware("view_users"), (ctx) => {
   }
 });
 
+// Временная команда меню (заглушка)
 bot.command("menu", allowUser, auditMiddleware("view_menu"), (ctx) => {
   ctx.reply(
     "🍽️ Меню на сегодня:\n\n" +
@@ -175,6 +197,17 @@ function getRoleName(role) {
     parent: "👪 Родитель",
   };
   return roles[role] || role;
+}
+
+// Функция для экранирования HTML
+function escapeHtml(text) {
+  if (!text) return "";
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 module.exports = bot;
