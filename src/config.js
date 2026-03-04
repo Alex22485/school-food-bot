@@ -14,6 +14,8 @@ module.exports = {
         rateLimit: {
             window: parseInt(process.env.RATE_LIMIT_WINDOW) || 1000,
             limit: parseInt(process.env.RATE_LIMIT_LIMIT) || 1
-        }
+        },
+        adminIds: process.env.ADMIN_IDS ? process.env.ADMIN_IDS.split(',').map(id => parseInt(id.trim())) : [],
+        appSecret: process.env.APP_SECRET
     }
 };
