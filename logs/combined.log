@@ -667,3 +667,20 @@
 {"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":8520401082,"timestamp":"2026-03-05 01:36:24","userId":2}
 {"level":"debug","message":"Response time","ms":145,"service":"school-canteen-bot","timestamp":"2026-03-05 01:36:24"}
 {"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-05 01:37:09"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-05 08:37:19"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-05 08:37:19"}
+{"chatId":8520401082,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-05 08:37:55","userId":8520401082}
+{"level":"debug","message":"User authenticated","role":"user","service":"school-canteen-bot","telegramId":8520401082,"timestamp":"2026-03-05 08:37:55","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":8520401082,"timestamp":"2026-03-05 08:37:55","userId":2}
+{"level":"debug","message":"Response time","ms":450,"service":"school-canteen-bot","timestamp":"2026-03-05 08:37:55"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-05 08:39:40","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"class_teacher","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-05 08:39:40","userId":3}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-05 08:39:40","userId":3}
+{"level":"debug","message":"Response time","ms":334,"service":"school-canteen-bot","timestamp":"2026-03-05 08:39:40"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-05 08:39:45","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"Response time","ms":111,"service":"school-canteen-bot","timestamp":"2026-03-05 08:39:45"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-05 08:39:47","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"Response time","ms":2,"service":"school-canteen-bot","timestamp":"2026-03-05 08:39:47"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-05 08:39:49","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"Response time","ms":1483,"service":"school-canteen-bot","timestamp":"2026-03-05 08:39:50"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-05 08:57:07"}

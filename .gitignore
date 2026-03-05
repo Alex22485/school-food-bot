@@ -1,8 +1,40 @@
+# Зависимости
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Файлы окружения с реальными секретами
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Базы данных
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite-journal
+backups/
+
+# Логи
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Тесты и покрытие (у вас уже есть)
 coverage/
 .nyc_output/
 jest.config.js
 
-# Редакторы и IDE
+# Редакторы и IDE (у вас уже есть)
 .vscode/
 .idea/
 *.swp
@@ -15,7 +47,7 @@ jest.config.js
 .classpath
 .settings/
 
-# Системные файлы
+# Системные файлы (у вас уже есть)
 .DS_Store
 Thumbs.db
 desktop.ini
@@ -23,15 +55,25 @@ desktop.ini
 .Spotlight-V100
 .Trashes
 ehthumbs.db
- 
- # Папки сборки
+
+# Папки сборки (у вас уже есть)
 dist/
 build/
 out/
 *.tsbuildinfo
 
-# Временные файлы npm
+# Временные файлы npm (у вас уже есть)
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# Дополнительно для Node.js
+.DS_Store
+*.pem
+npm-debug.log*
+
+# Локальные файлы конфигурации
+.vscode/
+.idea/
+*.sublime-*
