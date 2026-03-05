@@ -3,16 +3,9 @@ const { prepare } = require("../database/db");
 const logger = require("../utils/logger");
 const escapeHtml = require("escape-html");
 
-// Регулярные выражения для валидации
-const VALIDATION_RULES = {
-  className: /^([1-9]|1[01])[АБВГДЕ]?$/,
-  classNameWithSpace: /^([1-9]|1[01])\s[АБВГДЕ]$/,
-  classNameQuoted: /^«([1-9]|1[01])[АБВГДЕ]?»$/,
-  childName: /^[А-Яа-яA-Za-z\s-]+$/,
-  notEmpty: /^(?!\s*$).+/,
-  maxLength: 50,
-  validClassLetters: ["А", "Б", "В", "Г", "Д", "Е"],
-};
+// Константы для классов
+const GRADES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+const LETTERS = ["А", "Б", "В", "Г", "Д", "Е"];
 
 // Обработчик нажатий на кнопки
 async function handleRegistrationAction(ctx) {
@@ -20,39 +13,55 @@ async function handleRegistrationAction(ctx) {
 
   try {
     const data = ctx.callbackQuery.data;
-    const parts = data.replace("register_", "").split("_");
-    const action = parts[0];
-    const value = parts[1];
 
-    const session = ctx.session;
-    if (!session.registration) {
-      return ctx.reply(
-        "❌ Ошибка: сессия регистрации не найдена. Нажмите /start заново.",
-      );
+    // Обработка выбора цифры класса
+    if (data.startsWith("classGrade_")) {
+      const grade = data.replace("classGrade_", "");
+      return await handleClassGradeSelection(ctx, parseInt(grade));
     }
 
-    switch (action) {
-      case "selectCity":
-        session.registration.cityId = parseInt(value);
-        await askForSchool(ctx, session.registration.cityId);
-        break;
-      case "selectSchool":
-        session.registration.schoolId = parseInt(value);
-        await completeRegistration(ctx);
-        break;
-      case "skip":
-        await completeRegistration(ctx);
-        break;
-      default:
-        ctx.reply("❌ Неизвестное действие");
+    // Обработка выбора буквы класса
+    if (data.startsWith("classLetter_")) {
+      const letter = data.replace("classLetter_", "");
+      return await handleClassLetterSelection(ctx, letter);
     }
+
+    // Обработка выбора города
+    if (data.startsWith("register_selectCity_")) {
+      const cityId = parseInt(data.replace("register_selectCity_", ""));
+      const session = ctx.session;
+      if (!session.registration) {
+        return ctx.reply(
+          "❌ Ошибка: сессия регистрации не найдена. Нажмите /start заново.",
+        );
+      }
+      session.registration.cityId = cityId;
+      await askForSchool(ctx, cityId);
+      return;
+    }
+
+    // Обработка выбора школы
+    if (data.startsWith("register_selectSchool_")) {
+      const schoolId = parseInt(data.replace("register_selectSchool_", ""));
+      const session = ctx.session;
+      if (!session.registration) {
+        return ctx.reply(
+          "❌ Ошибка: сессия регистрации не найдена. Нажмите /start заново.",
+        );
+      }
+      session.registration.schoolId = schoolId;
+      await askForNextStep(ctx);
+      return;
+    }
+
+    ctx.reply("❌ Неизвестное действие");
   } catch (error) {
     logger.error("Error in handleRegistrationAction:", error);
     ctx.reply("❌ Произошла ошибка");
   }
 }
 
-// Обработчик текстового ввода
+// Обработчик текстового ввода (только для имени ученика)
 async function handleRegistrationInput(ctx) {
   try {
     const session = ctx.session;
@@ -61,25 +70,14 @@ async function handleRegistrationInput(ctx) {
     const text = ctx.message.text.trim();
     const step = session.registration.step;
 
-    if (!VALIDATION_RULES.notEmpty.test(text)) {
+    if (!text) {
       return ctx.reply("❌ Ввод не может быть пустым.");
     }
 
-    if (text.length > VALIDATION_RULES.maxLength) {
-      return ctx.reply(
-        `❌ Слишком длинное значение. Максимум ${VALIDATION_RULES.maxLength} символов.`,
-      );
-    }
-
-    switch (step) {
-      case "class":
-        await handleClassInput(ctx, text);
-        break;
-      case "childName":
-        await handleChildNameInput(ctx, text);
-        break;
-      default:
-        await completeRegistration(ctx);
+    if (step === "childName") {
+      await handleChildNameInput(ctx, text);
+    } else {
+      await completeRegistration(ctx);
     }
   } catch (error) {
     logger.error("Error in handleRegistrationInput:", error);
@@ -87,90 +85,114 @@ async function handleRegistrationInput(ctx) {
   }
 }
 
-// Обработка ввода класса
-async function handleClassInput(ctx, text) {
-  const isValid =
-    VALIDATION_RULES.className.test(text) ||
-    VALIDATION_RULES.classNameWithSpace.test(text) ||
-    VALIDATION_RULES.classNameQuoted.test(text);
+// Обработка выбора цифры класса
+async function handleClassGradeSelection(ctx, grade) {
+  const session = ctx.session;
+  if (!session.registration) return;
 
-  if (!isValid) {
-    return ctx.reply(
-      "❌ **Некорректный формат класса**\n\n" +
-        "✅ **Допустимые форматы:**\n" +
-        "• 5А, 11Б (цифра + буква)\n" +
-        "• 5 А, 11 Б (цифра + пробел + буква)\n" +
-        "• «5А», «11Б» (в кавычках)\n\n" +
-        "📊 **Допустимые цифры:** 1-11\n" +
-        "🔤 **Допустимые буквы:** А, Б, В, Г, Д, Е",
-    );
-  }
+  session.registration.classGrade = grade;
+  session.registration.classLetter = null;
 
-  let num = null;
-  let letter = null;
+  await askForClassLetter(ctx);
+}
 
-  if (text.includes(" ")) {
-    const parts = text.split(" ");
-    num = parseInt(parts[0]);
-    letter = parts[1];
-  } else if (text.startsWith("«")) {
-    const match = text.match(/«(\d+)([АБВГДЕ]?)»/);
-    if (match) {
-      num = parseInt(match[1]);
-      letter = match[2];
-    }
-  } else {
-    const match = text.match(/^(\d+)([АБВГДЕ]?)$/);
-    if (match) {
-      num = parseInt(match[1]);
-      letter = match[2];
-    }
-  }
+// Обработка выбора буквы класса
+async function handleClassLetterSelection(ctx, letter) {
+  const session = ctx.session;
+  if (!session.registration) return;
 
-  if (num !== null && (num < 1 || num > 11)) {
-    return ctx.reply(
-      `❌ Номер класса должен быть от 1 до 11. Вы ввели: ${num}`,
-    );
-  }
+  const grade = session.registration.classGrade;
+  const fullClassName = `${grade}${letter}`;
 
-  if (letter && !VALIDATION_RULES.validClassLetters.includes(letter)) {
-    return ctx.reply(
-      `❌ Недопустимая буква класса: "${letter}".\n` +
-        `Допустимые буквы: А, Б, В, Г, Д, Е`,
-    );
-  }
-
-  ctx.session.registration.className = escapeHtml(text);
-  ctx.session.registration.step = "childName";
+  session.registration.className = fullClassName;
+  session.registration.classLetter = letter;
+  session.registration.step = "childName";
 
   await ctx.reply(
-    "👶 **Введите имя ребенка**\n\n" +
+    `✅ Вы выбрали класс: **${fullClassName}**\n\n` +
+      "👤 **Введите имя и фамилию ученика**\n\n" +
       "✅ **Правила:**\n" +
       "• Только буквы, пробел и дефис\n" +
+      "• Максимум 30 символов\n" +
       "• Нельзя использовать цифры\n\n" +
-      "📝 **Примеры:** Анна, Анна-Мария, София Анна",
+      "📝 **Примеры:** Иван Петров, Анна-Мария Сидорова",
+    { parse_mode: "Markdown" },
   );
 }
 
-// Обработка ввода имени ребенка
+// Обработка ввода имени и фамилии ученика - УПРОЩЕННАЯ ВАЛИДАЦИЯ
 async function handleChildNameInput(ctx, text) {
-  if (!VALIDATION_RULES.childName.test(text)) {
+  const session = ctx.session;
+  const fullName = text.trim();
+
+  // Проверка на пустое имя
+  if (!fullName) {
+    return ctx.reply("❌ Имя и фамилия не могут быть пустыми.");
+  }
+
+  // Проверка на максимальную длину (30 символов)
+  if (fullName.length > 30) {
+    return ctx.reply("❌ Слишком длинное имя. Максимум 30 символов.");
+  }
+
+  // Проверка на минимальную длину (имя + фамилия должны быть хотя бы 5 символов)
+  if (fullName.length < 5) {
     return ctx.reply(
-      "❌ **Некорректный формат имени**\n\n" +
-        "✅ **Правила:**\n" +
-        "• Только буквы, пробел и дефис\n" +
-        "• Нельзя использовать цифры\n\n" +
-        "📝 **Примеры:** Анна, Анна-Мария, София Анна",
+      "❌ Слишком короткое имя. Введите имя и фамилию (минимум 5 символов).",
     );
   }
 
-  if (text.trim().length < 2) {
-    return ctx.reply("❌ Имя должно содержать хотя бы 2 символа.");
+  // Проверка, что введены имя и фамилия (хотя бы один пробел)
+  if (!fullName.includes(" ")) {
+    return ctx.reply(
+      "❌ **Введите имя и фамилию через пробел**\n\n" +
+        "📝 **Примеры:** Иван Петров, Анна-Мария Сидорова",
+      { parse_mode: "Markdown" },
+    );
   }
 
-  ctx.session.registration.childName = escapeHtml(text);
-  ctx.session.registration.step = "city";
-  await askForCity(ctx);
+  // Проверка на допустимые символы (только буквы, пробелы, дефисы)
+  if (!/^[А-Яа-яA-Za-z\s-]+$/.test(fullName)) {
+    return ctx.reply(
+      "❌ **Некорректный формат**\n\n" +
+        "✅ **Правила:**\n" +
+        "• Только буквы, пробел и дефис\n" +
+        "• Нельзя использовать цифры\n" +
+        "• Нельзя использовать спецсимволы\n\n" +
+        "📝 **Примеры:** Иван Петров, Анна-Мария Сидорова",
+      { parse_mode: "Markdown" },
+    );
+  }
+
+  // Проверка на двойные пробелы
+  if (fullName.includes("  ")) {
+    return ctx.reply("❌ Не используйте двойные пробелы между словами.");
+  }
+
+  // Разбиваем на части для проверки
+  const nameParts = fullName.split(/\s+/);
+
+  // Проверка, что есть ровно 2 части (имя и фамилия)
+  if (nameParts.length !== 2) {
+    return ctx.reply(
+      "❌ Введите только имя и фамилию через один пробел (без отчества).",
+    );
+  }
+
+  // Проверка каждой части на минимальную длину
+  for (const part of nameParts) {
+    if (part.length < 2) {
+      return ctx.reply(
+        `❌ Слишком короткая часть имени: "${part}". Каждая часть должна содержать хотя бы 2 символа.`,
+      );
+    }
+  }
+
+  // Сохраняем имя с экранированием
+  session.registration.childName = escapeHtml(fullName);
+
+  // Переходим к завершению регистрации
+  await completeRegistration(ctx);
 }
 
 // Запрос выбора города
@@ -179,7 +201,9 @@ async function askForCity(ctx) {
     const cities = prepare("SELECT id, name FROM cities ORDER BY name").all();
 
     if (cities.length === 0) {
-      return await completeRegistration(ctx);
+      return ctx.reply(
+        "❌ В системе нет городов. Обратитесь к администратору.",
+      );
     }
 
     const buttons = cities.map((city) =>
@@ -190,37 +214,32 @@ async function askForCity(ctx) {
     for (let i = 0; i < buttons.length; i += 2) {
       keyboard.push(buttons.slice(i, i + 2));
     }
-    keyboard.push([Markup.button.callback("⏭️ Пропустить", "register_skip")]);
 
     await ctx.reply(
-      "🏙️ **Выберите ваш город**\n\nЕсли вашего города нет, нажмите 'Пропустить'",
+      "🏙️ **Выберите ваш город**",
       Markup.inlineKeyboard(keyboard),
     );
   } catch (error) {
     logger.error("Error in askForCity:", error);
-    await completeRegistration(ctx);
+    ctx.reply("❌ Ошибка при загрузке списка городов");
   }
 }
 
-// Запрос выбора школы - ИСПРАВЛЕНО
+// Запрос выбора школы
 async function askForSchool(ctx, cityId) {
   try {
-    console.log("📌 askForSchool called with cityId:", cityId);
-
     if (!cityId) {
-      console.log("❌ cityId is undefined or null");
-      return await completeRegistration(ctx);
+      return ctx.reply("❌ Ошибка: город не выбран");
     }
 
-    // ИСПРАВЛЕНО: правильный способ передачи параметра
     const schools = prepare(
       "SELECT id, name FROM schools WHERE city_id = ? ORDER BY name",
     ).all(cityId);
 
-    console.log("📌 Schools found:", schools.length);
-
     if (schools.length === 0) {
-      return await completeRegistration(ctx);
+      return ctx.reply(
+        "❌ В выбранном городе нет школ. Обратитесь к администратору.",
+      );
     }
 
     const buttons = schools.map((school) =>
@@ -231,17 +250,49 @@ async function askForSchool(ctx, cityId) {
     for (let i = 0; i < buttons.length; i += 2) {
       keyboard.push(buttons.slice(i, i + 2));
     }
-    keyboard.push([Markup.button.callback("⏭️ Пропустить", "register_skip")]);
 
     await ctx.reply(
-      "🏫 **Выберите вашу школу**\n\nЕсли вашей школы нет, нажмите 'Пропустить'",
+      "🏫 **Выберите вашу школу**",
       Markup.inlineKeyboard(keyboard),
     );
   } catch (error) {
-    console.log("❌ Error in askForSchool:", error);
     logger.error("Error in askForSchool:", error);
-    await completeRegistration(ctx);
+    ctx.reply("❌ Ошибка при загрузке списка школ");
   }
+}
+
+// Выбор цифры класса
+async function askForClassGrade(ctx) {
+  const buttons = GRADES.map((grade) =>
+    Markup.button.callback(`${grade}`, `classGrade_${grade}`),
+  );
+
+  const keyboard = [];
+  for (let i = 0; i < buttons.length; i += 4) {
+    keyboard.push(buttons.slice(i, i + 4));
+  }
+
+  await ctx.reply(
+    "🔢 **Выберите цифру класса**",
+    Markup.inlineKeyboard(keyboard),
+  );
+}
+
+// Выбор буквы класса
+async function askForClassLetter(ctx) {
+  const buttons = LETTERS.map((letter) =>
+    Markup.button.callback(letter, `classLetter_${letter}`),
+  );
+
+  const keyboard = [];
+  for (let i = 0; i < buttons.length; i += 3) {
+    keyboard.push(buttons.slice(i, i + 3));
+  }
+
+  await ctx.reply(
+    "🔤 **Выберите букву класса**",
+    Markup.inlineKeyboard(keyboard),
+  );
 }
 
 // Определение следующего шага
@@ -249,48 +300,52 @@ async function askForNextStep(ctx) {
   const registration = ctx.session.registration;
   const role = registration.role;
 
+  console.log("📌 askForNextStep - role:", role, "step:", registration.step);
+
   if (role === "parent") {
-    if (!registration.className) {
-      registration.step = "class";
-      await ctx.reply(
-        "📚 **Введите класс ребенка**\n\n" +
-          "✅ **Форматы:** 5А, 5 А, «5А»\n" +
-          "📊 **Цифры:** 1-11\n" +
-          "🔤 **Буквы:** А, Б, В, Г, Д, Е",
-      );
+    if (!registration.cityId) {
+      registration.step = "city";
+      await askForCity(ctx);
+    } else if (!registration.schoolId) {
+      registration.step = "school";
+      await askForSchool(ctx, registration.cityId);
+    } else if (!registration.className) {
+      registration.step = "classGrade";
+      await askForClassGrade(ctx);
     } else if (!registration.childName) {
       registration.step = "childName";
-      await ctx.reply(
-        "👶 **Введите имя ребенка**\n\n" +
-          "✅ **Правила:** только буквы, пробел, дефис\n" +
-          "📝 **Примеры:** Анна, Анна-Мария",
-      );
     } else {
-      registration.step = "city";
-      await askForCity(ctx);
+      await completeRegistration(ctx);
     }
   } else if (role === "class_teacher") {
-    if (!registration.className) {
-      registration.step = "class";
-      await ctx.reply(
-        "📚 **Введите ваш класс**\n\n" +
-          "✅ **Форматы:** 5А, 5 А, «5А»\n" +
-          "📊 **Цифры:** 1-11\n" +
-          "🔤 **Буквы:** А, Б, В, Г, Д, Е",
-      );
-    } else {
+    if (!registration.cityId) {
       registration.step = "city";
       await askForCity(ctx);
+    } else if (!registration.schoolId) {
+      registration.step = "school";
+      await askForSchool(ctx, registration.cityId);
+    } else if (!registration.className) {
+      registration.step = "classGrade";
+      await askForClassGrade(ctx);
+    } else {
+      await completeRegistration(ctx);
     }
   } else if (role === "kitchen") {
-    registration.step = "city";
-    await askForCity(ctx);
+    if (!registration.cityId) {
+      registration.step = "city";
+      await askForCity(ctx);
+    } else if (!registration.schoolId) {
+      registration.step = "school";
+      await askForSchool(ctx, registration.cityId);
+    } else {
+      await completeRegistration(ctx);
+    }
   } else {
     await completeRegistration(ctx);
   }
 }
 
-// Завершение регистрации и создание пользователя
+// Завершение регистрации
 async function completeRegistration(ctx) {
   try {
     const registration = ctx.session.registration;
@@ -302,7 +357,6 @@ async function completeRegistration(ctx) {
       return ctx.reply("❌ Ошибка: данные регистрации не найдены");
     }
 
-    // Проверяем, есть ли уже пользователь
     const existing = prepare(`SELECT id FROM users WHERE telegram_id = ?`).get(
       telegramId,
     );
@@ -310,7 +364,23 @@ async function completeRegistration(ctx) {
     let user;
 
     if (!existing) {
-      // СОЗДАЕМ нового пользователя
+      if (
+        !registration.cityId ||
+        !registration.schoolId ||
+        !registration.className
+      ) {
+        console.log("❌ Missing required fields:", {
+          cityId: registration.cityId,
+          schoolId: registration.schoolId,
+          className: registration.className,
+        });
+        return ctx.reply("❌ Ошибка: не все обязательные поля заполнены");
+      }
+
+      if (registration.role === "parent" && !registration.childName) {
+        return ctx.reply("❌ Ошибка: не указано имя ученика");
+      }
+
       console.log("📌 Creating new user with data:", {
         telegramId,
         role: registration.role,
@@ -330,9 +400,9 @@ async function completeRegistration(ctx) {
       const result = insert.run(
         telegramId,
         registration.role,
-        registration.cityId || null,
-        registration.schoolId || null,
-        registration.className || null,
+        registration.cityId,
+        registration.schoolId,
+        registration.className,
         registration.childName || null,
       );
 
@@ -342,7 +412,6 @@ async function completeRegistration(ctx) {
         result.lastInsertRowid,
       );
     } else {
-      // Обновляем существующего
       console.log("📌 Updating existing user");
 
       const update = prepare(`
@@ -377,22 +446,20 @@ async function completeRegistration(ctx) {
       child_name: user.child_name,
     });
 
-    // Показываем приветственное сообщение
+    // Упрощенное финальное сообщение
     let welcomeText = `✅ **Регистрация успешно завершена!**\n\n`;
-    welcomeText += `👤 **Роль:** ${getRoleDisplay(user.role)}\n`;
 
     if (user.city_id)
       welcomeText += `🏙️ **Город:** ${getCityName(user.city_id)}\n`;
     if (user.school_id)
       welcomeText += `🏫 **Школа:** ${getSchoolName(user.school_id)}\n`;
     if (user.class_name) welcomeText += `📚 **Класс:** ${user.class_name}\n`;
-    if (user.child_name) welcomeText += `👶 **Ребенок:** ${user.child_name}\n`;
+    if (user.child_name) welcomeText += `👤 **Ученик:** ${user.child_name}\n`;
 
     welcomeText += `\n🎉 **Теперь вы можете пользоваться ботом!**`;
 
     await ctx.reply(welcomeText, { parse_mode: "Markdown" });
 
-    // Показываем меню без приветствия
     const { showRoleBasedMenu } = require("./start");
     await showRoleBasedMenu(ctx, user, true);
   } catch (error) {
@@ -408,7 +475,7 @@ function getRoleDisplay(role) {
     admin: "🔑 Администратор",
     class_teacher: "🍎 Классный руководитель",
     kitchen: "🍳 Кухня",
-    parent: "👪 Родитель",
+    parent: "👪 Родитель/Ученик",
     user: "👤 Пользователь",
   };
   return roles[role] || role;
