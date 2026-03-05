@@ -1,14 +1,14 @@
-//
-
 const { Markup } = require("telegraf");
 const { prepare } = require("../database/db");
 const logger = require("../utils/logger");
+const registrationHandler = require("./registration");
 
 const ROLE_SELECTION_TTL = 24 * 60 * 60 * 1000;
 
 async function startHandler(ctx) {
   try {
     const telegramId = ctx.from.id;
+    console.log("\n🔍 START HANDLER CALLED for user:", telegramId);
 
     // Прямой запрос к БД
     const existingUser = prepare(`
@@ -17,17 +17,52 @@ async function startHandler(ctx) {
     `).get(telegramId);
 
     if (!existingUser) {
-      // Новый пользователь - показываем выбор роли
+      console.log("📌 New user - showing role selection");
       await showRoleSelection(ctx);
     } else {
-      // Существующий пользователь - показываем меню
+      console.log("📌 Existing user found:", {
+        id: existingUser.id,
+        role: existingUser.role,
+        city_id: existingUser.city_id,
+        school_id: existingUser.school_id,
+        class_name: existingUser.class_name,
+        child_name: existingUser.child_name,
+      });
+
       ctx.state.user = existingUser;
-      await showRoleBasedMenu(ctx, existingUser);
+
+      // Проверяем, заполнен ли профиль
+      const isProfileComplete = checkProfileCompleteness(existingUser);
+      console.log("📌 Profile complete:", isProfileComplete);
+
+      if (!isProfileComplete) {
+        console.log("📌 Profile incomplete - starting registration");
+        await startRegistration(ctx, existingUser.role);
+      } else {
+        console.log("📌 Profile complete - showing menu");
+        await showRoleBasedMenu(ctx, existingUser);
+      }
     }
   } catch (error) {
     logger.error("Error in startHandler:", error);
     await ctx.reply("❌ Произошла ошибка. Пожалуйста, попробуйте позже.");
   }
+}
+
+// Запуск процесса регистрации
+async function startRegistration(ctx, role) {
+  ctx.session = ctx.session || {};
+  ctx.session.registration = {
+    role: role,
+    step: "city",
+    cityId: null,
+    schoolId: null,
+    className: null,
+    childName: null,
+  };
+
+  await ctx.reply("📝 Давайте заполним ваш профиль!");
+  await registrationHandler.askForNextStep(ctx);
 }
 
 async function showRoleSelection(ctx) {
@@ -59,10 +94,16 @@ async function showRoleSelection(ctx) {
   await ctx.replyWithMarkdown(welcomeText, keyboard);
 }
 
-async function showRoleBasedMenu(ctx, user) {
+// Функция показа меню с опцией пропуска приветствия
+async function showRoleBasedMenu(ctx, user, skipWelcome = false) {
   const username = ctx.from.first_name || "Пользователь";
 
-  let menuText = `👋 С возвращением, ${escapeHtml(username)}!\n\n`;
+  let menuText = "";
+
+  if (!skipWelcome) {
+    menuText += `👋 С возвращением, ${escapeHtml(username)}!\n\n`;
+  }
+
   menuText += `Ваша роль: ${getRoleDisplay(user.role)}\n\n`;
   menuText += `**Главное меню**\n\nВыберите действие:`;
 
@@ -106,163 +147,93 @@ async function showRoleBasedMenu(ctx, user) {
   keyboard.push([Markup.button.callback("❓ Помощь", "help")]);
   await ctx.replyWithMarkdown(menuText, Markup.inlineKeyboard(keyboard));
 }
-// ! Старая функция
-// async function handleRoleSelection(ctx) {
-//   try {
-//     const callbackData = ctx.callbackQuery.data;
-//     const parts = callbackData.split("_");
 
-//     if (parts.length < 3 || parts[0] !== "role") {
-//       return;
-//     }
+// Проверка полноты профиля - ИСПРАВЛЕНО
+function checkProfileCompleteness(user) {
+  if (!user) return false;
 
-//     const action = parts[1];
-//     const timestamp = parseInt(parts[2]);
+  console.log("📌 Checking completeness for:", {
+    role: user.role,
+    city_id: user.city_id,
+    school_id: user.school_id,
+    class_name: user.class_name,
+    child_name: user.child_name,
+  });
 
-//     // Проверяем TTL
-//     if (Date.now() - timestamp > ROLE_SELECTION_TTL) {
-//       await ctx.editMessageText("⏰ Время выбора истекло. Нажмите /start");
-//       return;
-//     }
+  switch (user.role) {
+    case "parent":
+      // Для родителя: город, класс и имя ребенка обязательны, школа - опционально
+      const isComplete = !!(user.city_id && user.class_name && user.child_name);
+      console.log("📌 Parent profile complete:", isComplete);
+      return isComplete;
 
-//     // Проверяем, не зарегистрирован ли уже
-//     const existing = prepare(`SELECT id FROM users WHERE telegram_id = ?`).get(
-//       ctx.from.id,
-//     );
-//     if (existing) {
-//       await ctx.editMessageText("❌ Вы уже зарегистрированы");
-//       return;
-//     }
+    case "class_teacher":
+      // Для учителя: город и класс обязательны, школа - опционально
+      return !!(user.city_id && user.class_name);
 
-//     // Регистрируем
-//     switch (action) {
-//       case "parent":
-//         await registerUser(ctx, "parent");
-//         break;
-//       case "teacher":
-//         await registerUser(ctx, "class_teacher");
-//         break;
-//       case "kitchen":
-//         await registerUser(ctx, "kitchen");
-//         break;
-//       case "help":
-//         await showHelp(ctx);
-//         break;
-//     }
-//   } catch (error) {
-//     logger.error("Error in handleRoleSelection:", error);
-//   }
-// }
+    case "kitchen":
+      // Для кухни: город обязателен, школа - опционально
+      return !!user.city_id;
+
+    default:
+      return true;
+  }
+}
 
 async function handleRoleSelection(ctx) {
-  // СРАЗУ отвечаем Telegram, чтобы кнопка перестала крутиться
   await ctx.answerCbQuery();
 
   try {
     const callbackData = ctx.callbackQuery.data;
-    console.log("📌 callbackData:", callbackData);
-
     const parts = callbackData.split("_");
-    console.log("📌 parts:", parts);
 
     if (parts.length < 3 || parts[0] !== "role") {
-      console.log("❌ Неверный формат");
       return;
     }
 
     const action = parts[1];
     const timestamp = parseInt(parts[2]);
-    console.log("📌 action:", action);
-    console.log("📌 timestamp:", timestamp);
 
     // Проверяем время жизни кнопки
     if (Date.now() - timestamp > ROLE_SELECTION_TTL) {
-      console.log("❌ Кнопка просрочена");
       await ctx.editMessageText("⏰ Время выбора истекло. Нажмите /start");
       return;
     }
 
     // Проверяем, нет ли уже пользователя в БД
-    console.log("📌 Проверяем существующего пользователя...");
     const existing = prepare(`SELECT id FROM users WHERE telegram_id = ?`).get(
       ctx.from.id,
     );
-    console.log("📌 existing:", existing);
 
     if (existing) {
-      console.log("❌ Пользователь уже существует");
       await ctx.editMessageText("❌ Вы уже зарегистрированы");
       return;
     }
 
     // Определяем роль
     let role;
-    if (action === "parent") role = "user";
+    if (action === "parent") role = "parent";
     else if (action === "teacher") role = "class_teacher";
     else if (action === "kitchen") role = "kitchen";
     else if (action === "help") {
       await showHelp(ctx);
       return;
     } else {
-      console.log("❌ Неизвестный action:", action);
       return;
     }
 
-    console.log("📌 role:", role);
-
-    // СОЗДАЕМ пользователя в БД
-    console.log("📌 Вставляем пользователя...");
-    const insert = prepare(`
-      INSERT INTO users (telegram_id, role, is_active, created_at, updated_at)
-      VALUES (?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `);
-
-    const result = insert.run(ctx.from.id, role);
-    console.log("✅ result:", result);
-
-    // Меняем текст сообщения
+    // Меняем текст сообщения (убираем кнопки)
     await ctx.editMessageText(
-      `✅ Регистрация успешна! Добро пожаловать, ${escapeHtml(ctx.from.first_name || "пользователь")}!`,
+      `📝 **Начинаем регистрацию**\n\n` +
+        `Вы выбрали роль: ${getRoleDisplay(role)}\n\n` +
+        `Сейчас мы соберем необходимые данные. После заполнения профиля вы будете зарегистрированы.`,
     );
 
-    // Показываем меню новым сообщением
-    const newUser = {
-      id: result.lastInsertRowid,
-      telegram_id: ctx.from.id,
-      role: role,
-      is_active: 1,
-    };
-
-    console.log("📌 newUser:", newUser);
-    await showRoleBasedMenu(ctx, newUser);
+    // Запускаем процесс заполнения профиля
+    await startRegistration(ctx, role);
   } catch (error) {
-    console.log("❌❌❌ ОШИБКА:", error);
-    console.log("❌❌❌ message:", error.message);
-    console.log("❌❌❌ stack:", error.stack);
-
     logger.error("Error in handleRoleSelection:", error);
     await ctx.editMessageText(`❌ Ошибка регистрации: ${error.message}`);
-  }
-}
-
-async function registerUser(ctx, role) {
-  try {
-    const insert = prepare(`
-      INSERT INTO users (telegram_id, role, is_active, created_at, updated_at)
-      VALUES (?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    `);
-
-    const result = insert.run(ctx.from.id, role);
-
-    // Меняем сообщение
-    await ctx.editMessageText(`✅ Регистрация успешна! Добро пожаловать!`);
-
-    // Показываем меню
-    const newUser = { id: result.lastInsertRowid, role };
-    await showRoleBasedMenu(ctx, newUser);
-  } catch (error) {
-    logger.error("Registration error:", error);
-    await ctx.editMessageText("❌ Ошибка регистрации");
   }
 }
 
@@ -300,4 +271,7 @@ function escapeHtml(text) {
 module.exports = {
   startHandler,
   handleRoleSelection,
+  showRoleBasedMenu,
+  checkProfileCompleteness,
+  startRegistration,
 };
