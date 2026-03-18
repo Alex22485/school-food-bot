@@ -36,7 +36,7 @@ async function handleRegistrationAction(ctx) {
         );
       }
       session.registration.cityId = cityId;
-      await askForSchool(ctx, cityId);
+      await askForNextStep(ctx);
       return;
     }
 
@@ -61,7 +61,7 @@ async function handleRegistrationAction(ctx) {
   }
 }
 
-// Обработчик текстового ввода (только для имени ученика)
+// Обработчик текстового ввода (только для имени ребенка)
 async function handleRegistrationInput(ctx) {
   try {
     const session = ctx.session;
@@ -92,6 +92,7 @@ async function handleClassGradeSelection(ctx, grade) {
 
   session.registration.classGrade = grade;
   session.registration.classLetter = null;
+  session.registration.step = "classLetter";
 
   await askForClassLetter(ctx);
 }
@@ -106,43 +107,46 @@ async function handleClassLetterSelection(ctx, letter) {
 
   session.registration.className = fullClassName;
   session.registration.classLetter = letter;
-  session.registration.step = "childName";
 
-  await ctx.reply(
-    `✅ Вы выбрали класс: **${fullClassName}**\n\n` +
-      "👤 **Введите имя и фамилию ученика**\n\n" +
-      "✅ **Правила:**\n" +
-      "• Только буквы, пробел и дефис\n" +
-      "• Максимум 30 символов\n" +
-      "• Нельзя использовать цифры\n\n" +
-      "📝 **Примеры:** Иван Петров, Анна-Мария Сидорова",
-    { parse_mode: "Markdown" },
-  );
+  // Для родителя после выбора класса запрашиваем имя ребенка
+  if (session.registration.role === "parent") {
+    session.registration.step = "childName";
+    await ctx.reply(
+      `✅ Вы выбрали класс: **${fullClassName}**\n\n` +
+        "👤 **Введите имя и фамилию ученика**\n\n" +
+        "✅ **Правила:**\n" +
+        "• Только буквы, пробел и дефис\n" +
+        "• Максимум 30 символов\n" +
+        "• Нельзя использовать цифры\n\n" +
+        "📝 **Примеры:** Иван Петров, Анна-Мария Сидорова",
+      { parse_mode: "Markdown" },
+    );
+  } else {
+    // Для учителя после выбора класса сразу завершаем регистрацию
+    session.registration.step = "complete";
+    await completeRegistration(ctx);
+  }
 }
 
-// Обработка ввода имени и фамилии ученика - УПРОЩЕННАЯ ВАЛИДАЦИЯ
+// Обработка ввода имени и фамилии ученика (только для родителя)
 async function handleChildNameInput(ctx, text) {
   const session = ctx.session;
   const fullName = text.trim();
 
-  // Проверка на пустое имя
   if (!fullName) {
     return ctx.reply("❌ Имя и фамилия не могут быть пустыми.");
   }
 
-  // Проверка на максимальную длину (30 символов)
   if (fullName.length > 30) {
     return ctx.reply("❌ Слишком длинное имя. Максимум 30 символов.");
   }
 
-  // Проверка на минимальную длину (имя + фамилия должны быть хотя бы 5 символов)
   if (fullName.length < 5) {
     return ctx.reply(
       "❌ Слишком короткое имя. Введите имя и фамилию (минимум 5 символов).",
     );
   }
 
-  // Проверка, что введены имя и фамилия (хотя бы один пробел)
   if (!fullName.includes(" ")) {
     return ctx.reply(
       "❌ **Введите имя и фамилию через пробел**\n\n" +
@@ -151,35 +155,29 @@ async function handleChildNameInput(ctx, text) {
     );
   }
 
-  // Проверка на допустимые символы (только буквы, пробелы, дефисы)
   if (!/^[А-Яа-яA-Za-z\s-]+$/.test(fullName)) {
     return ctx.reply(
       "❌ **Некорректный формат**\n\n" +
         "✅ **Правила:**\n" +
         "• Только буквы, пробел и дефис\n" +
-        "• Нельзя использовать цифры\n" +
-        "• Нельзя использовать спецсимволы\n\n" +
+        "• Нельзя использовать цифры\n\n" +
         "📝 **Примеры:** Иван Петров, Анна-Мария Сидорова",
       { parse_mode: "Markdown" },
     );
   }
 
-  // Проверка на двойные пробелы
   if (fullName.includes("  ")) {
     return ctx.reply("❌ Не используйте двойные пробелы между словами.");
   }
 
-  // Разбиваем на части для проверки
   const nameParts = fullName.split(/\s+/);
 
-  // Проверка, что есть ровно 2 части (имя и фамилия)
   if (nameParts.length !== 2) {
     return ctx.reply(
       "❌ Введите только имя и фамилию через один пробел (без отчества).",
     );
   }
 
-  // Проверка каждой части на минимальную длину
   for (const part of nameParts) {
     if (part.length < 2) {
       return ctx.reply(
@@ -188,10 +186,8 @@ async function handleChildNameInput(ctx, text) {
     }
   }
 
-  // Сохраняем имя с экранированием
   session.registration.childName = escapeHtml(fullName);
-
-  // Переходим к завершению регистрации
+  session.registration.step = "complete";
   await completeRegistration(ctx);
 }
 
@@ -295,57 +291,66 @@ async function askForClassLetter(ctx) {
   );
 }
 
-// Определение следующего шага
+// Определение следующего шага в зависимости от роли
 async function askForNextStep(ctx) {
   const registration = ctx.session.registration;
   const role = registration.role;
 
   console.log("📌 askForNextStep - role:", role, "step:", registration.step);
+  console.log("📌 Current data:", {
+    cityId: registration.cityId,
+    schoolId: registration.schoolId,
+    className: registration.className,
+    childName: registration.childName,
+  });
 
+  // Город обязателен для всех
+  if (!registration.cityId) {
+    registration.step = "city";
+    await askForCity(ctx);
+    return;
+  }
+
+  // Школа обязательна для всех
+  if (!registration.schoolId) {
+    registration.step = "school";
+    await askForSchool(ctx, registration.cityId);
+    return;
+  }
+
+  // Дальнейшие шаги зависят от роли
   if (role === "parent") {
-    if (!registration.cityId) {
-      registration.step = "city";
-      await askForCity(ctx);
-    } else if (!registration.schoolId) {
-      registration.step = "school";
-      await askForSchool(ctx, registration.cityId);
-    } else if (!registration.className) {
+    // Для родителя нужны класс и имя ребенка
+    if (!registration.className) {
       registration.step = "classGrade";
       await askForClassGrade(ctx);
-    } else if (!registration.childName) {
+      return;
+    }
+    if (!registration.childName) {
       registration.step = "childName";
-    } else {
-      await completeRegistration(ctx);
+      return;
     }
   } else if (role === "class_teacher") {
-    if (!registration.cityId) {
-      registration.step = "city";
-      await askForCity(ctx);
-    } else if (!registration.schoolId) {
-      registration.step = "school";
-      await askForSchool(ctx, registration.cityId);
-    } else if (!registration.className) {
+    // Для учителя нужен только класс
+    if (!registration.className) {
       registration.step = "classGrade";
       await askForClassGrade(ctx);
-    } else {
-      await completeRegistration(ctx);
+      return;
     }
-  } else if (role === "kitchen") {
-    if (!registration.cityId) {
-      registration.step = "city";
-      await askForCity(ctx);
-    } else if (!registration.schoolId) {
-      registration.step = "school";
-      await askForSchool(ctx, registration.cityId);
-    } else {
-      await completeRegistration(ctx);
-    }
-  } else {
+    console.log("✅ Teacher registration complete");
     await completeRegistration(ctx);
+    return;
+  } else if (role === "kitchen") {
+    // Для кухни больше ничего не нужно
+    console.log("✅ Kitchen registration complete");
+    await completeRegistration(ctx);
+    return;
   }
+
+  await completeRegistration(ctx);
 }
 
-// Завершение регистрации
+// Завершение регистрации с проверкой уникальности кухни
 async function completeRegistration(ctx) {
   try {
     const registration = ctx.session.registration;
@@ -357,6 +362,48 @@ async function completeRegistration(ctx) {
       return ctx.reply("❌ Ошибка: данные регистрации не найдены");
     }
 
+    if (!registration.cityId || !registration.schoolId) {
+      console.log("❌ Missing required fields:", {
+        cityId: registration.cityId,
+        schoolId: registration.schoolId,
+      });
+      return ctx.reply("❌ Ошибка: не выбраны город и школа");
+    }
+
+    if (registration.role === "parent") {
+      if (!registration.className) {
+        return ctx.reply("❌ Ошибка: не выбран класс");
+      }
+      if (!registration.childName) {
+        return ctx.reply("❌ Ошибка: не указано имя ученика");
+      }
+    }
+
+    if (registration.role === "class_teacher" && !registration.className) {
+      return ctx.reply("❌ Ошибка: не выбран класс");
+    }
+
+    if (registration.role === "kitchen") {
+      const existingKitchen = prepare(`
+        SELECT id, telegram_id FROM users 
+        WHERE role = 'kitchen' AND school_id = ?
+      `).get(registration.schoolId);
+
+      if (existingKitchen) {
+        logger.warn("Attempt to register second kitchen for school", {
+          schoolId: registration.schoolId,
+          existingKitchenId: existingKitchen.id,
+          newUserTelegramId: telegramId,
+        });
+
+        return ctx.reply(
+          "❌ **Ошибка регистрации**\n\n" +
+            "Для этой школы уже зарегистрирован сотрудник кухни.\n" +
+            "Если это ошибка, обратитесь к администратору.",
+        );
+      }
+    }
+
     const existing = prepare(`SELECT id FROM users WHERE telegram_id = ?`).get(
       telegramId,
     );
@@ -364,23 +411,6 @@ async function completeRegistration(ctx) {
     let user;
 
     if (!existing) {
-      if (
-        !registration.cityId ||
-        !registration.schoolId ||
-        !registration.className
-      ) {
-        console.log("❌ Missing required fields:", {
-          cityId: registration.cityId,
-          schoolId: registration.schoolId,
-          className: registration.className,
-        });
-        return ctx.reply("❌ Ошибка: не все обязательные поля заполнены");
-      }
-
-      if (registration.role === "parent" && !registration.childName) {
-        return ctx.reply("❌ Ошибка: не указано имя ученика");
-      }
-
       console.log("📌 Creating new user with data:", {
         telegramId,
         role: registration.role,
@@ -402,7 +432,7 @@ async function completeRegistration(ctx) {
         registration.role,
         registration.cityId,
         registration.schoolId,
-        registration.className,
+        registration.className || null,
         registration.childName || null,
       );
 
@@ -446,22 +476,20 @@ async function completeRegistration(ctx) {
       child_name: user.child_name,
     });
 
-    // Упрощенное финальное сообщение
+    // Финальное сообщение - ТОЛЬКО ПОЗДРАВЛЕНИЕ, без дублирования данных
     let welcomeText = `✅ **Регистрация успешно завершена!**\n\n`;
-
-    if (user.city_id)
-      welcomeText += `🏙️ **Город:** ${getCityName(user.city_id)}\n`;
-    if (user.school_id)
-      welcomeText += `🏫 **Школа:** ${getSchoolName(user.school_id)}\n`;
-    if (user.class_name) welcomeText += `📚 **Класс:** ${user.class_name}\n`;
-    if (user.child_name) welcomeText += `👤 **Ученик:** ${user.child_name}\n`;
-
-    welcomeText += `\n🎉 **Теперь вы можете пользоваться ботом!**`;
+    welcomeText += `🎉 **Теперь вы можете пользоваться ботом!**`;
 
     await ctx.reply(welcomeText, { parse_mode: "Markdown" });
 
-    const { showRoleBasedMenu } = require("./start");
-    await showRoleBasedMenu(ctx, user, true);
+    // Сразу показываем меню, где уже есть вся информация
+    if (user.role === "kitchen") {
+      const kitchenHandler = require("./kitchen");
+      await kitchenHandler.showKitchenMenu(ctx);
+    } else {
+      const { showRoleBasedMenu } = require("./start");
+      await showRoleBasedMenu(ctx, user, true);
+    }
   } catch (error) {
     console.log("❌ Error in completeRegistration:", error);
     logger.error("Error in completeRegistration:", error);

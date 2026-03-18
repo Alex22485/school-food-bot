@@ -3,18 +3,13 @@ const logger = require("../utils/logger");
 
 async function authMiddleware(ctx, next) {
   try {
-    // Пропускаем callback-запросы (от кнопок)
-    if (ctx.callbackQuery) {
-      return next();
-    }
-
     const telegramId = ctx.from?.id;
 
     if (!telegramId) {
       return next();
     }
 
-    // Только ищем пользователя, НО НЕ СОЗДАЕМ
+    // ВСЕГДА ищем пользователя в БД, включая callback запросы!
     const user = prepare(`
       SELECT
         id,
@@ -40,9 +35,9 @@ async function authMiddleware(ctx, next) {
         telegramId,
       });
     } else {
-      // Пользователь НЕ найден - просто ничего не делаем
+      // Пользователь НЕ найден
       ctx.state.user = null;
-      logger.info("New user detected (not in DB)", { telegramId });
+      logger.info("User not found in DB", { telegramId });
     }
 
     return next();

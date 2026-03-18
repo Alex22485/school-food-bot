@@ -1,6 +1,7 @@
 const { Markup } = require("telegraf");
 const { prepare } = require("../database/db");
 const logger = require("../utils/logger");
+const config = require("../config");
 const registrationHandler = require("./registration");
 
 const ROLE_SELECTION_TTL = 24 * 60 * 60 * 1000;
@@ -67,7 +68,6 @@ async function startRegistration(ctx, role) {
   await registrationHandler.askForNextStep(ctx);
 }
 
-// Обновленный текст с "Родитель/Ученик"
 async function showRoleSelection(ctx) {
   const username = ctx.from.first_name || "Пользователь";
   const timestamp = Date.now();
@@ -75,9 +75,9 @@ async function showRoleSelection(ctx) {
   const welcomeText =
     `👋 Привет, ${escapeHtml(username)}!\n\n` +
     `Добро пожаловать в бот школьной столовой. Для начала работы выберите вашу роль:\n\n` +
-    `👪 **Родитель/Ученик** - заказ питания\n` +
-    `🍎 **Классный руководитель** - управление заказами класса\n` +
-    `🍳 **Кухня** - сотрудник столовой\n\n` +
+    `👪 **Родитель/Ученик** - свободная регистрация\n` +
+    `🍎 **Классный руководитель** - требуется код доступа\n` +
+    `🍳 **Кухня** - требуется код доступа\n\n` +
     `_Этот выбор действителен в течение 24 часов._`;
 
   const keyboard = Markup.inlineKeyboard([
@@ -97,7 +97,7 @@ async function showRoleSelection(ctx) {
   await ctx.replyWithMarkdown(welcomeText, keyboard);
 }
 
-// Упрощенная функция показа меню
+// Функция показа меню
 async function showRoleBasedMenu(ctx, user, skipWelcome = false) {
   const username = ctx.from.first_name || "Пользователь";
 
@@ -117,18 +117,22 @@ async function showRoleBasedMenu(ctx, user, skipWelcome = false) {
         [Markup.button.callback("📅 Меню", "admin_menus")],
       ];
       break;
+
     case "class_teacher":
       keyboard = [
         [Markup.button.callback("📋 Заказы класса", "teacher_orders")],
         [Markup.button.callback("💰 Оплаты", "teacher_payments")],
       ];
       break;
+
     case "kitchen":
       keyboard = [
-        [Markup.button.callback("📊 Заказы сегодня", "kitchen_today")],
-        [Markup.button.callback("✅ Подтвердить", "kitchen_confirm")],
+        [Markup.button.callback("🍽️ Управление меню", "kitchen_create_menu")],
+        [Markup.button.callback("📋 Мои меню", "kitchen_my_menus")],
+        [Markup.button.callback("👤 Профиль", "user_profile")],
       ];
       break;
+
     case "parent":
       keyboard = [
         [Markup.button.callback("🍽️ Меню", "parent_menu")],
@@ -136,6 +140,7 @@ async function showRoleBasedMenu(ctx, user, skipWelcome = false) {
         [Markup.button.callback("👤 Профиль", "parent_profile")],
       ];
       break;
+
     default:
       keyboard = [
         [Markup.button.callback("🍽️ Меню", "user_menu")],
@@ -146,11 +151,10 @@ async function showRoleBasedMenu(ctx, user, skipWelcome = false) {
 
   keyboard.push([Markup.button.callback("❓ Помощь", "help")]);
 
-  // Отправляем только кнопки с кратким заголовком
-  await ctx.replyWithMarkdown(
-    "**Выберите действие:**",
-    Markup.inlineKeyboard(keyboard),
-  );
+  // Добавляем краткий заголовок перед кнопками
+  const headerText = menuText ? menuText : "**Выберите действие:**";
+
+  await ctx.replyWithMarkdown(headerText, Markup.inlineKeyboard(keyboard));
 }
 
 // Проверка полноты профиля
@@ -167,21 +171,25 @@ function checkProfileCompleteness(user) {
 
   switch (user.role) {
     case "parent":
+      // Для родителя нужны город, класс и имя ребенка (школа опционально)
       const isComplete = !!(user.city_id && user.class_name && user.child_name);
       console.log("📌 Parent profile complete:", isComplete);
       return isComplete;
 
     case "class_teacher":
+      // Для учителя нужны город и класс (школа опционально)
       return !!(user.city_id && user.class_name);
 
     case "kitchen":
-      return !!user.city_id;
+      // Для кухни нужны город и школа
+      return !!(user.city_id && user.school_id);
 
     default:
       return true;
   }
 }
 
+// Функция обработки выбора роли
 async function handleRoleSelection(ctx) {
   await ctx.answerCbQuery();
 
@@ -210,41 +218,59 @@ async function handleRoleSelection(ctx) {
       return;
     }
 
-    let role;
-    if (action === "parent") role = "parent";
-    else if (action === "teacher") role = "class_teacher";
-    else if (action === "kitchen") role = "kitchen";
-    else if (action === "help") {
+    // Обработка разных ролей
+    if (action === "parent") {
+      // Родитель/ученик - свободная регистрация
+      await ctx.editMessageText(
+        `📝 **Начинаем регистрацию**\n\n` +
+          `Вы выбрали роль: 👪 Родитель/Ученик\n\n` +
+          `Сейчас мы соберем необходимые данные.`,
+      );
+      await startRegistration(ctx, "parent");
+    } else if (action === "teacher") {
+      // Классный руководитель - нужен код
+      ctx.session = ctx.session || {};
+      ctx.session.pendingRole = "class_teacher";
+      ctx.session.roleSelectionTimestamp = timestamp;
+
+      await ctx.editMessageText(
+        `🔐 **Регистрация для классного руководителя**\n\n` +
+          `Вам нужно ввести секретный код, полученный от администратора.\n\n` +
+          `Пожалуйста, отправьте код в чат:`,
+      );
+    } else if (action === "kitchen") {
+      // Кухня - нужен код
+      ctx.session = ctx.session || {};
+      ctx.session.pendingRole = "kitchen";
+      ctx.session.roleSelectionTimestamp = timestamp;
+
+      await ctx.editMessageText(
+        `🔐 **Регистрация для сотрудника кухни**\n\n` +
+          `Вам нужно ввести секретный код, полученный от администратора.\n\n` +
+          `Пожалуйста, отправьте код в чат:`,
+      );
+    } else if (action === "help") {
       await showHelp(ctx);
-      return;
-    } else {
-      return;
     }
-
-    await ctx.editMessageText(
-      `📝 **Начинаем регистрацию**\n\n` +
-        `Вы выбрали роль: ${getRoleDisplay(role)}\n\n` +
-        `Сейчас мы соберем необходимые данные. После заполнения профиля вы будете зарегистрированы.`,
-    );
-
-    await startRegistration(ctx, role);
   } catch (error) {
     logger.error("Error in handleRoleSelection:", error);
     await ctx.editMessageText(`❌ Ошибка регистрации: ${error.message}`);
   }
 }
 
+// Функция помощи
 async function showHelp(ctx) {
   const helpText =
     "❓ **Помощь по ролям**\n\n" +
-    "👪 **Родитель/Ученик** - заказ питания\n" +
-    "🍎 **Классный руководитель** - для учителей\n" +
-    "🍳 **Кухня** - для сотрудников столовой";
+    "👪 **Родитель/Ученик** - свободная регистрация\n" +
+    "🍎 **Классный руководитель** - требуется код у администратора\n" +
+    "🍳 **Кухня** - требуется код у администратора\n\n" +
+    "Если вы учитель или сотрудник кухни, обратитесь к администратору для получения кода.\n\n" +
+    "Коды можно получить у @AlexGlushkov85";
 
   await ctx.editMessageText(helpText, { parse_mode: "Markdown" });
 }
 
-// Обновлено отображение роли
 function getRoleDisplay(role) {
   const roles = {
     admin: "🔑 Администратор",
