@@ -3797,3 +3797,135 @@
 {"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-03-20 15:07:51","userId":2}
 {"level":"debug","message":"Response time","ms":1265,"service":"school-canteen-bot","timestamp":"2026-03-20 15:07:52"}
 {"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-03-20 15:07:59"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-20 17:10:08"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-20 17:10:08"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-20 17:11:40","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-20 17:11:40","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-03-20 17:11:40","userId":2}
+{"level":"debug","message":"Response time","ms":919,"service":"school-canteen-bot","timestamp":"2026-03-20 17:11:41"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-03-20 18:02:53"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-03-20 18:02:53"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-20 18:03:23","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-20 18:03:23","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-20 18:03:41","userId":2}
+{"level":"debug","message":"Response time","ms":17416,"service":"school-canteen-bot","timestamp":"2026-03-20 18:03:41"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-03-20 18:04:13","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-03-20 18:04:13","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-03-20 18:04:13","userId":2}
+{"level":"debug","message":"Response time","ms":13599,"service":"school-canteen-bot","timestamp":"2026-03-20 18:04:27"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-04-30 16:33:23"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-04-30 16:33:23"}
+{"chatId":1282158641,"command":"/start","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:33:58","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:33:58","userId":2}
+{"action":"start","entityId":null,"entityType":null,"level":"info","message":"Audit log","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:33:59","userId":2}
+{"level":"debug","message":"Response time","ms":1062,"service":"school-canteen-bot","timestamp":"2026-04-30 16:33:59"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:06","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:06","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:06","userId":2}
+{"level":"debug","message":"Response time","ms":528,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:07"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:10","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:10","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:10","userId":2}
+{"level":"debug","message":"Response time","ms":962,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:10"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:14","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:14","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:14","userId":2}
+{"level":"debug","message":"Response time","ms":1139,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:15"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:19","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:19","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:19","userId":2}
+{"level":"debug","message":"Response time","ms":389,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:19"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:22","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:22","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:22","userId":2}
+{"level":"debug","message":"Response time","ms":728,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:23"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:25","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:25","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:25","userId":2}
+{"level":"debug","message":"Response time","ms":898,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:26"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:32","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:32","userId":2}
+{"level":"debug","message":"Response time","ms":717,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:32"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:40","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:40","userId":2}
+{"level":"debug","message":"Response time","ms":871,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:41"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:44","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:44","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:44","userId":2}
+{"level":"debug","message":"Response time","ms":721,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:45"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:46","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:34:46","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:34:46","userId":2}
+{"level":"debug","message":"Response time","ms":796,"service":"school-canteen-bot","timestamp":"2026-04-30 16:34:47"}
+{"chatId":1282158641,"command":"01.05.2026","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:35:02","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:35:02","userId":2}
+{"level":"debug","message":"Response time","ms":986,"service":"school-canteen-bot","timestamp":"2026-04-30 16:35:03"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:35:47","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:35:47","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:35:47","userId":2}
+{"level":"debug","message":"Response time","ms":886,"service":"school-canteen-bot","timestamp":"2026-04-30 16:35:48"}
+{"chatId":1282158641,"command":"Каша 17\nМолоко 20\nШоко 35","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:35:50","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:35:50","userId":2}
+{"level":"debug","message":"Response time","ms":1,"service":"school-canteen-bot","timestamp":"2026-04-30 16:35:50"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:36:04","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:36:04","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:36:04","userId":2}
+{"level":"debug","message":"Response time","ms":979,"service":"school-canteen-bot","timestamp":"2026-04-30 16:36:05"}
+{"chatId":1282158641,"command":"01.05.26","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:36:12","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:36:12","userId":2}
+{"level":"debug","message":"Response time","ms":635,"service":"school-canteen-bot","timestamp":"2026-04-30 16:36:13"}
+{"chatId":1282158641,"command":"01.05.2026","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:36:23","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:36:23","userId":2}
+{"level":"debug","message":"Response time","ms":721,"service":"school-canteen-bot","timestamp":"2026-04-30 16:36:24"}
+{"chatId":1282158641,"command":"Каша 17\nМолоко 20\nШоко 35","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:36:27","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:36:27","userId":2}
+{"level":"debug","message":"Response time","ms":707,"service":"school-canteen-bot","timestamp":"2026-04-30 16:36:28"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 16:36:35","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 16:36:35","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 16:36:35","userId":2}
+{"date":"2026-05-01","itemsCount":3,"level":"info","menuId":4,"message":"Menu created","schoolId":1,"service":"school-canteen-bot","timestamp":"2026-04-30 16:36:35"}
+{"level":"debug","message":"Response time","ms":1543,"service":"school-canteen-bot","timestamp":"2026-04-30 16:36:36"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-04-30 17:10:27"}
+{"journalMode":"wal","level":"info","message":"Database connected successfully","path":"D:\\IT_developer\\JS Course\\React Native\\myProgect\\0_Telegram_bot\\6_02_03_26_School_dinner_with_deepSeek\\database.sqlite","service":"school-canteen-bot","timestamp":"2026-04-30 17:13:36"}
+{"level":"info","message":"Database schema already up to date","service":"school-canteen-bot","timestamp":"2026-04-30 17:13:36"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:13:56","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:13:56","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 17:13:56","userId":2}
+{"level":"debug","message":"Response time","ms":328,"service":"school-canteen-bot","timestamp":"2026-04-30 17:13:56"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:00","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:14:00","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:00","userId":2}
+{"level":"debug","message":"Response time","ms":375,"service":"school-canteen-bot","timestamp":"2026-04-30 17:14:00"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:03","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:14:03","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:03","userId":2}
+{"level":"debug","message":"Response time","ms":339,"service":"school-canteen-bot","timestamp":"2026-04-30 17:14:03"}
+{"chatId":1282158641,"command":"02.05.2026","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:19","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:14:19","userId":2}
+{"level":"debug","message":"Response time","ms":358,"service":"school-canteen-bot","timestamp":"2026-04-30 17:14:19"}
+{"chatId":1282158641,"command":"Каша 19","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:39","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:14:39","userId":2}
+{"level":"debug","message":"Response time","ms":336,"service":"school-canteen-bot","timestamp":"2026-04-30 17:14:39"}
+{"chatId":1282158641,"command":"Какао 44","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:48","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:14:48","userId":2}
+{"level":"debug","message":"Response time","ms":340,"service":"school-canteen-bot","timestamp":"2026-04-30 17:14:48"}
+{"chatId":1282158641,"command":"Пицца 44","level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:54","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:14:54","userId":2}
+{"level":"debug","message":"Response time","ms":342,"service":"school-canteen-bot","timestamp":"2026-04-30 17:14:55"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:57","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:14:57","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 17:14:57","userId":2}
+{"level":"debug","message":"Response time","ms":706,"service":"school-canteen-bot","timestamp":"2026-04-30 17:14:57"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:15:12","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:15:12","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 17:15:12","userId":2}
+{"level":"debug","message":"Response time","ms":320,"service":"school-canteen-bot","timestamp":"2026-04-30 17:15:13"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:15:19","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:15:19","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 17:15:19","userId":2}
+{"level":"debug","message":"Response time","ms":339,"service":"school-canteen-bot","timestamp":"2026-04-30 17:15:19"}
+{"chatId":1282158641,"level":"info","message":"Incoming request","service":"school-canteen-bot","timestamp":"2026-04-30 17:15:27","userId":1282158641,"username":"AlexGlushkov85"}
+{"level":"debug","message":"User authenticated","role":"kitchen","service":"school-canteen-bot","telegramId":1282158641,"timestamp":"2026-04-30 17:15:27","userId":2}
+{"level":"debug","message":"Role check passed","requiredRoles":["admin","kitchen"],"role":"kitchen","service":"school-canteen-bot","timestamp":"2026-04-30 17:15:27","userId":2}
+{"level":"debug","message":"Response time","ms":335,"service":"school-canteen-bot","timestamp":"2026-04-30 17:15:27"}
+{"level":"info","message":"Received SIGINT signal","service":"school-canteen-bot","timestamp":"2026-04-30 17:16:26"}
